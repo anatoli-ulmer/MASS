@@ -1,0 +1,1293 @@
+Tuesday, June 1st, 2010
+Agilent - Acqiris Linux User Guide
+Copyright 2010, Agilent Technologies, Inc.
+
+This README file complements the material from the Acqiris User Manuals.
+Please consult them as well.
+
+
+
+1.  System Requirements
+
+In order to obtain reasonable performance from your digitizer, Acqiris
+products need the following minimum PC System Requirements:
+
+Processor: 500 MHz Pentium (higher recommended)
+
+Memory: 256 Mbytes RAM (more recommended when using multiple cards with Mpoint
+memories)
+
+Display resolution: At least 1024 x 768 pixels and 256 colors for use of
+AcqirisDemo
+
+Operating System: Linux kernel version 2.6 (version 2.4 partial support)
+
+Hard Drive Space: 80 Mbytes for a complete install
+
+CD Drive (or any method to copy Acqiris Software installation files from CD to
+the hard drive such as LAN, floppy drive, etc.)
+
+
+
+
+2.  Installing the Software for Linux
+
+To install the Acqiris Software to run on Linux you need to have a Linux
+system running with kernel version 2.6 (version 2.4 is deprecated: recent
+card types are not supported).
+
+As with the previous release, package files are available for some popular
+distributions. If you are using Debian, Ubuntu, Fedora, or CentOS, you can
+install the software using a standard package: see 2.2.
+
+
+2.1.   Installing with a tar file
+
+The release is contained either in one of the tar files:
+
+  AcqirisLinux-4.2a-gcc-3.4.i686.tar.gz     (CentOS 4.8 i386,  GNU gcc 3.4).
+  AcqirisLinux-4.2a-gcc-4.3.i686.tar.gz     (Debian 5.0 i386,  GNU gcc 4.3).
+  AcqirisLinux-4.2a-gcc-4.3.x86_64.tar.gz   (Debian 5.0 amd64, GNU gcc 4.3).
+  
+The distribution and gcc version indicated in parenthesis describe the
+systems that were used to build the binaries. These tar files can be used on
+many other Linux distributions.
+
+A tar file should be copied to a local directory (e.g. your home directory)
+and then unpacked by using the following command: 
+
+    tar xzf AcqirisLinux-4.2a-gcc-X.x.i686.tar.gz
+
+The resulting directory AcqirisLinux contains all the files that make this 
+Acqiris Software release 4.2a, including this README file and a graphical Demo
+program: AcqirisDemo. 
+
+Before being able the run the software, you have to install the acqiris device
+driver into the running kernel: see 3.
+
+
+
+2.2.   Installing with a distribution specific package
+
+The distribution specific package files are located in directories named
+after the distribution name and version. Packages are available for the 
+following distributions and versions:
+
+  Debian, 5.0
+    The distribution used for the developement of Acqiris software.
+      Debian-5.0/agilent-acqirisdriver_4.2a-1_i386.deb
+      Debian-5.0/agilent-acqirisdriver_4.2a-1_amd64.deb
+
+  Ubuntu, 8.04, 9.10
+    This is the most popular and easy-to-use distribution, based on Debian.
+      Ubuntu-8.04/agilent-acqirisdriver_4.2a-1_i386.deb
+      Ubuntu-9.10/agilent-acqirisdriver_4.2a-1_i386.deb
+
+  Fedora, 12
+    Another popular inovative distribution, test bed for RedHat Linux.
+      Due to the limited time frame between the availability of Fedora 12 and
+      the release of Agilent Acqiris Software, this package is not included
+      on the CDROM. You will be able to find it later on the Agilent website.
+
+  CentOS, 4.8, 5.4
+    This distribution is a rebranded build of RedHat Enterprise Linux.
+      CentOS-4.8/agilent-acqirisdriver-4.2a-1.i386.rpm
+      CentOS-5.4/agilent-acqirisdriver-4.2a-1.i386.rpm
+      CentOS-5.4/agilent-acqirisdriver-4.2a-1.x86_64.rpm
+
+More information on these distributions is available on the following
+web-site: http://distrowatch.com/dwres.php?resource=major
+
+All these packages contain a version of the Acqiris 4.2a software release for
+Linux with full support of recent Acqiris products.
+
+A deb package should be installed by the root user with the following command:
+
+    dpkg -i agilent-acqirisdriver_4.2a-1_i386.deb
+
+An rpm package should be installed by the root user with the following command:
+
+    rpm -ivh agilent-acqirisdriver-4.2a-1.i386.rpm
+
+Before being able the run the software, you have to install the acqiris device
+driver into your running kernel: see 3.
+
+
+
+
+3.  Installing the device driver
+
+The acqiris device driver is a loadable kernel module. It is provided as
+source files and has to be compiled and installed prior using the cards.
+
+
+3.1.    Compiling the kernel module
+
+All files needed to compile a new kernel mode driver are in
+
+  (/usr/)src/agilent/acqiris/kernel26module/ for Linux kernels 2.6,
+  (/usr/)src/agilent/acqiris/kernel24module/ for Linux kernels 2.4.
+
+To compile the driver, the header files of the linux kernel need to be
+installed. Furthermore, depending on the Linux distribution, the kernel source
+files may need to be installed too.
+
+    For Debian users, in order to compile the kernel module on a system,
+    a few packages that match the current kernel-image must be installed.
+    For instance, on a Debian 4.0 'etch' system 686 the required packages
+    are:    linux-image-2.6-686
+            linux-image-2.6.18-4-686
+            linux-headers-2.6-686
+            linux-headers-2.6.18-4
+            linux-headers-2.6.18-4-686
+            linux-kbuild-2.6.18
+
+The makefile will try to guess where the kernel headers are located. If it
+fails, see instructions inside the makefile itself to specify manually where
+these kernel header files are located.
+
+To compile a new kernel module, use the following commands:
+
+    cd kernel26module     (or kernel24module)
+    make clean all        to generate a new kernel module from scratch
+    make install          to copy the kernel module where it should reside
+                          (this last command requires super user privileges).
+
+In the end, the loadable kernel module should be present in the system's
+loadable kernel modules directory. You can verify it is present by running:
+
+    ls -l /lib/modules/$(uname -r)/extra/acqiris.ko
+
+After these operations are completed, the newly compiled kernel module
+should be loaded into the kernel, and ready to be used.
+
+All the following operations are executed automatically:
+ - Copy of the kernel module into the kernel directory.
+ - Load the module into the kernel.
+ - Create the device driver node.
+
+These are performed in an init.d script named acqiris. It is copied during
+installation into the /etc/init.d/ directory.
+
+To enable or disable the kernel module, you can run the commands:
+    
+    /etc/init.d/acqiris start
+    /etc/init.d/acqiris stop
+
+In case operations are not properly executed on your system, you can refer to
+the following sections 3.2. and 3.3. to perform these operations manualy.
+
+
+3.2.    Loading the kernel module
+
+Once the device driver is installed into its kernel module directory, it has to
+be loaded into the kernel.
+
+First update the kernel modules dependencies:
+
+    /sbin/depmod -a
+
+Then load the kernel module:
+
+    /sbin/modprobe -v acqiris 
+
+You can add the command above to your /etc/rc.local file. It is run at system
+startup and will load the acqiris kernel module automatically when your
+computer is restarted.
+
+You can check that the device driver is loaded properly with lsmod.
+
+    /sbin/lsmod | grep acqiris
+
+If lsmod does not report a module named acqiris, then the kernel module
+is not loaded into the kernel. Check any error messages that may have been
+issued by the commands you have run, and contact Agilent Acqiris technical
+support.
+
+The kernel modules versions 2.0 and above have a default limit of managing 15
+Acqiris instruments. This limit can be changed, up or down, either to enable
+more instruments or to free more kernel memory, by setting the module
+parameter maxdev as follows upon loading the module:
+
+    /sbin/modprobe -v acqiris maxdev=63
+
+The absolute maximum value accepted for this parameter is 255.
+
+
+3.3.   Creating the device driver node 
+
+Check that a device node has been created.
+
+    ls -l /dev/acqrsPCI
+
+If the device node /dev/acqiris is present on your system, the Acqiris
+Software is ready to be used. Otherwise, continue reading this section.
+
+For systems using udev (the dynamic /dev/ hierarchy) or running kernels above
+2.6.17, the device driver node may not be created automatically. You can do it
+with mknod by running the following command:
+
+    /sbin/mknod -m 666 /dev/acqrsPCI c 124 0
+
+You can check that the device node has been created with ls:
+
+    ls -l /dev/acqrsPCI
+
+You can add the mknod command to your /etc/rc.local file. It is run at system
+startup and will create the /dev/acqiris device node automatically when your
+computer is restarted.
+
+Additionaly, more device driver nodes are created. One per instrument actually
+present on the system. these nodes can be created manualy as follows:
+
+    /sbin/mknod -m 666 /dev/acqrs0 c 124 1
+    /sbin/mknod -m 666 /dev/acqrs1 c 124 2
+    /sbin/mknod -m 666 /dev/acqrs2 c 124 3
+    ...
+
+Note that the permissions that are set in this example (-m 666) give access to
+the Acqiris instruments to all users. This may not be what you expect and
+these permissions can be adjusted to fit your requirements. The base rule is
+that any user that wants to use the Acqiris instruments have to get read and
+write access to /dev/acqiris.
+
+
+
+
+4.  Firmware files
+
+If you intend to use an Averagers, Analyzers, Time to Digital converters, or
+12-bit digitizers you must install the Firmware .bit files. You can either copy
+them from the Firmware directory of the CD-ROM or download them from our WEB 
+site. They should be placed in the Firmware subdirectory of AcqirisLinux. In
+the case of the CD-ROM, this can be done by continuing the above command 
+sequence with the following:
+
+    cp /mnt/CDRom/Firmware/*.bit Firmware/
+
+If you need to keep multiple versions of the Firmware, please read the section
+on environment variables.
+
+
+
+4.1.    Environment variables for the Firmware
+
+Automatic loading of the firmware needed by some modules relies on the
+environment variable AcqirisDxDir pointing to the directory containing the
+file AqDrv4.ini which in turn points to the directory containing the Firmware
+.bit files. Therefore, assuming that your Firmware is in
+/usr/local/AcqirisLinux/Firmware and that AqDrv4.ini is in
+/usr/local/AcqirisLinux/demo then you must edit AqDrv4.ini so that it contains
+the line
+
+    fpgaPath=/usr/local/AcqirisLinux/Firmware
+
+Then, if your shell is csh or tcsh modify the .login file to contain the line
+
+    setenv AcqirisDxDir  /usr/local/AcqirisLinux/demo
+
+or, if your shell is bash, ksh, zsh or sh, modify the .profile file to contain 
+the lines
+
+    AcqirisDxDir=/usr/local/AcqirisLinux/demo
+    export AcqirisDxDir
+
+
+
+
+5.  Distribution for Linux
+
+The directories indicated here are the exact directories for the packaged
+distribution files. If you did not use the packages, but used a .tar.gz
+archive, you have to remove the /usr/ part of the directories indicated below
+and replace it by AcqirisLinux/.
+For example if you unpacked the archive into your home directory, the directory
+/usr/bin/ becomes $(HOME)/AcqirisLinux/bin/.
+
+   /usr/bin/ directory:
+        AcqirisDemo                AcqirisDemo application based on the Qt GUI
+
+   /usr/include/ directory:
+        AcqirisImport.h            C/C++ Import Header file for
+        AcqirisInterface.h         Acqiris Generic API
+        AcqirisD1Import.h          C/C++ Import Header file for
+        AcqirisD1Interface.h       Acqiris Digitizers API
+        AcqirisT3Import.h          C/C++ Import Header file for
+        AcqirisT3Interface.h       Acqiris Timers API
+        AcqirisG4Import.h          C/C++ Import Header file for
+        AcqirisG4Interface.h       Acqiris Generators API
+        AcqirisExImport.h          C/C++ Import Header file for
+        AcqirisExInterface.h       Acqiris Extended API
+        AcqirisDataTypes.h         C/C++ Data Structure Header file
+        AcqirisExDataTypes.h       C/C++ Extended Data Structure Header file
+        AcqirisErrorCodes.h        C?C++ Acqiris Error Code definitions
+        visatype.h                 VISA types
+        vpptype.h                  VISA types
+        visa.h                     VISA types
+        ivi.h                      VISA types
+
+   /usr/lib/ directory:
+        libAqDrv4.so               Linux Acqiris library
+
+   /usr/lib/firmware/agilent/ directory 
+        *.bit                      directory used to store bitfiles for
+                                   Analyzers, Averagers, and 12-bit Digitizers
+
+   /usr/src/agilent/acqiris/kernel26module/ directory:
+        Makefile                   global commands
+        init.d/acqiris             init script to be installed in /etc/init.d
+        module/Makefile            copmilation specific commands
+        module/DDrIORules.h        header file for kernel/user comm.
+        module/acqiris.h           header file of kernel module
+        module/acqiris-init.c      source file for initialization
+        module/acqiris-ioctl.      source file for I/O operations
+        module/acqiris-dma.        source file for DMA transfers
+
+   /usr/src/agilent/acqiris/kernel24module/ directory:
+        Makefile                   to create acqrsPCI.o
+        DDrIORules.h               header file
+        LinuxDriverPCI.c           kernel driver main source code
+        LinuxDriverPCI.h           kernel driver header file
+        LinuxConfigPCI.c           kernel driver configuration code
+
+   /usr/src/agilent/acqiris/examples/C++ directory:
+        Linux/Makefile             global makefile to build all examples
+        GetStartedC.c              the C example
+        GetStarted16bitMultiSegment.cpp       Various C++ examples each of
+        GetStarted16bitSingleSegment.cpp      them demonstrates a particular
+        GetStarted8bitMultiSegment.cpp        feature of the Library API.
+        GetStarted8bitSingleSegment.cpp
+        GetStartedAC240fftVC.cpp              The simplest example is
+        GetStartedAC240memVC.cpp              GetStarted8bitSingleSegment.cpp
+        GetStartedAnalyzersVC.cpp             that works for most cards.
+        GetStartedAvgVC.cpp
+        GetStartedHistoTDC.cpp
+        GetStartedPeakTDC.cpp
+        GetStartedSARmode.cpp
+        GetStartedSC240BaseStrmVC.cpp
+        GetStartedSC240StreamerVC.cpp
+        GetStartedTC84x.cpp
+        GetStartedTC890.cpp
+        GetStartedThresholdGatesSSR.cpp
+        GetStartedU1084AAvg.cpp
+        GetStartedU1084APeakTDC.cpp
+        GetStartedUserGatesSSR.cpp
+        GetStartedVoltsMultiSegment.cpp
+        GetStartedVoltsSingleSegment.cpp
+        InstrumentDiscovery.cpp
+        RisAcquisitionVC.cpp
+
+   /usr/share/doc/agilent-acqirisdriver/
+        README.Debian              a copy of this README file
+
+
+
+
+6.  Running AcqirisDemo & Getting Started
+
+The AcqirisDemo program can simply be run by entering:
+
+    AcqirisDemo
+
+When starting this program, the system can complain about a missing dependency
+on libqt-mt.so.3. Indeed, AcqirisDemo requires the Qt3 gui library to be
+present on your system to be able to run. Install it using the system package
+manager of your distribution: apt-get, yum, or YaST.
+
+
+The Linux GetStarted sample programs can be created without the need of an
+additional development application. Enter the following commands:
+
+    cp -r /usr/src/agilent/acqiris/examples examples
+                      Copy the example directory and all of its contents
+    cd examples/Linux Change to this new directory containing the makefile
+    make              Compile and link the example programs
+
+Note that the include and library paths are defined in the Makefile.
+
+The GetStarted8bitSingleSegment.cpp file contains a simple user program which:
+    has globally allocated buffers to achieve optimal readout performance
+    finds the Acqiris digitizers on the target machine
+    initializes the first (or only) one
+    configures some acquisition parameters (and rereads them for checking)
+    loops (100 times) over a cycle that
+    -   starts the acquisition
+    -   waits for it to terminate
+    -   reads the waveform 
+
+
+
+
+7.    Release History:
+
+Agilent Acqiris Software 4.2b (June 1, 2010)
+=============================
+
+This release contains updates of the User Manuals ONLY.
+The actual software and firmware is identical to that of
+Acqiris Software 4.2a described below.
+
+
+
+Agilent Acqiris Software 4.2a (March 22, 2010)
+=============================
+
+This version of Agilent Acqiris Software works with Linux distributions
+based on kernels 2.6, either 32 bits or 64 bits. Note that the 64 bits
+version supports 32 bits compatibility mode.
+
+Device Driver: Uses version 4.17.5.251
+    loadable kernel module version 2.0.0 (for Linux 2.6 kernels)
+    loadable kernel module version 1.4.2  (for Linux 2.4 kernels)
+AcqirisDemo: Uses version 3.12.1.773
+
+Linux specific changes
+- None
+
+Other Changes
+- Fixed DC440 TDC calibration issues.
+
+Other Changes (in 4.1a, not released on Linux)
+- Fixed potential crash in multithreaded applications
+- Support for DP1400 U1071Axxx RevB
+- Fixed calibration error in External Clock for DP1400, U1071Axxx
+- Adjusted T0 Delay for DP1400 ADC RevB
+
+FPGA .bit files:
+     AC210.bit                             Version B
+     AC240.bit                             Version B
+     AC240FFT2GSs.bit                      Version B
+     AC240mem.bit                          Version A
+     AP100FPGA1_AP200FPGA1and3.bit         Version H
+     AP100FPGA2_AP200FPGA2and4.bit         Version H
+     AP101FPGA1_AP201FPGA1and3.bit         Version R2.08
+     AP101FPGA2_AP201FPGA2and4.bit         Version R2.08
+     AP240_AP235_AP210_AP205.bit           Version B
+     AP240_AP235_AP210_AP205_AdvTDC.bit    Version R2.04
+     AP240_AP235_AP210_AP205_Averager.bit  Version F
+     AP240_AP235_AP210_AP205_SSR.bit       Version R2.04
+     DC440_DC438_DC436.bit                 Version R1.02
+     DC440_DC438_DC436_RevD.bit            Version R4.00
+     DP310_DP308_DP306.bit                 Version R1.02
+     DP310_DP308_DP306_RevD.bit            Version R4.00
+     SC210.bit                             Version B
+     SC210stream2.bit                      Version V2.01
+     SC240.bit                             Version B
+     SC240Str1.bit                         Version A
+     SC240Stream2.bit                      Version B
+     SC240Stream12.bit                     Version V2.3
+     TC840.bit                             Version E
+     TC842.bit                             Version B
+     TC890.bit                             Version D
+
+
+
+Agilent Acqiris Software 4.0a (November 30, 2009)
+=============================
+
+This version of Agilent Acqiris Software works with Linux distributions
+based on kernels 2.6, either 32 bits or 64 bits. Note that the 64 bits
+version supports 32 bits compatibility mode.
+
+Device Driver: Uses version 4.17.2.181
+    loadable kernel module version 2.0.0 (for Linux 2.6 kernels)
+    loadable kernel module version 1.4.2  (for Linux 2.4 kernels)
+AcqirisDemo: Uses version 3.12.1.243
+
+Linux specific changes
+- Changed name of kernel module to acqiris (instead of acqrsPCI).
+- Added full native 64 bits support for 2.6 kernels.
+- Added full support for multi-process operations.
+  (see functions Acqrs_suspendControl and Acqrs_resumeControl)
+- Added changes for compliance with kernel 2.6.30.
+- Added init.d script for easy startup configuration.
+
+Other Changes
+- Added support for U1084A001 Averager and PeakTDC options
+- Added support for DP1400/U1071Ax RevB
+- Extended '_calLoad/Save' support to all digitizer families except
+DC440/DP310 families
+- Fixed DP1400, U1071Ax, bad samples at end of acquisition when using
+forceTrig(0)
+- Fixed DP1400, U1071Ax, 16 samples shift in combine x2 at/below 250MS/s
+- Fixed configuration of Control I/O for TC84x
+- Fixed 'calLoad/Save' not restoring AC trigger values forDC282/DC152/DP1400
+families
+- Fixed bad 1st acquisition after switching between internal and external
+reference for TCxxx modules
+- Fixed error 'wrong or not loaded FPGA' after 'resumeControl' or
+'powerSystem' for DC440, AP2xx, SCxxx and ACxxx families
+- Fixed 'configAvgConfig', 'getInstrumentInfo' and 'calRequired' raising
+'Access Violation' when called with invalid parameters
+
+FPGA .bit files:
+     AC210.bit                             Version B
+     AC240.bit                             Version B
+     AC240FFT2GSs.bit                      Version B
+     AC240mem.bit                          Version A
+     AP100FPGA1_AP200FPGA1and3.bit         Version H
+     AP100FPGA2_AP200FPGA2and4.bit         Version H
+     AP101FPGA1_AP201FPGA1and3.bit         Version R2.08
+     AP101FPGA2_AP201FPGA2and4.bit         Version R2.08
+     AP240_AP235_AP210_AP205.bit           Version B
+     AP240_AP235_AP210_AP205_AdvTDC.bit    Version R2.04
+     AP240_AP235_AP210_AP205_Averager.bit  Version F
+     AP240_AP235_AP210_AP205_SSR.bit       Version R2.04
+     DC440_DC438_DC436.bit                 Version R1.02
+     DC440_DC438_DC436_RevD.bit            Version R4.00
+     DP310_DP308_DP306.bit                 Version R1.02
+     DP310_DP308_DP306_RevD.bit            Version R4.00
+     SC210.bit                             Version B
+     SC210stream2.bit                      Version V2.01
+     SC240.bit                             Version B
+     SC240Str1.bit                         Version A
+     SC240Stream2.bit                      Version B
+     SC240Stream12.bit                     Version V2.3
+     TC840.bit                             Version E
+     TC842.bit                             Version B
+     TC890.bit                             Version D
+
+
+
+Acqiris Software 3.3a (February 5th, 2009)
+=====================
+
+Device Driver: Uses version 4.15.5.98
+    loadable kernel module version 1.6.15 (for Linux 2.6 kernels)
+    loadable kernel module version 1.4.2  (for Linux 2.4 kernels)
+AcqirisDemo: Uses version 3.10.1.434
+
+Linux specific changes
+- Fixed kerneloops related to DMA page sizes
+- Added changes for compliance with kernel 2.6.27
+- Removed drv-install and acqstartstop scripts
+
+Other Changes
+- New API functions: powerSystem (functionality for Power Aware applications,
+required for Vista), calLoad/calRequired/calSave (saving calibration
+constants to file), suspendControl/resumeControl (multi-process support),
+AcqrsT3_forceTrig (TC890)
+- New models: TC842, U1071A002, U1071A004, U1071AHZ1, U1071AHZ2, U1071AHZ4,
+U1091AD28
+- Fixed DP1400, U1071Ax, U1084Ax, External Trigger 1 MOhm does not work
+with External Clock
+- Fixed bad data order with MAC200 instruments running on Big Endian
+processors with 8-bit DMA read mode
+- Fixed corrupted VME SBS library crashing the driver
+- Fixed DC271A Family, Trigger 1MOhm 50V not calibrated
+- Fixed DC271 Family, DC270 Family, wrong T0 delay +/-1 ns in specific rare
+resync cases
+- Fixed calibration failure with DP1400 on Linux fast machines.
+- Fixed DC282, DC252, DC222, 80 samples misplaced for lower sample rates
+(since v4.12.0)
+- AS Bus2, return error ACQIRIS_ERROR_TOO_MANY_DEVICES if array has more than
+5 devices
+- Removed StartOnTrigger mode for AS Bus multi-instruments
+- Fixed SAR mode erroneously enabled for AS Bus multi-instruments (since
+v4.12.0)
+- Fixed DC112, external clock continuous erroneously allowing sparsing > 16
+- Enhanced Visa errors management
+- Fixed Visa VX407c devices, 'readData' returning nothing if buffer address
+is < 0x40000
+- Fixed AP201 PingPong, gated readout does not work with autoswitch
+- Fixed AP201 PingPong, long acquisitions may be corrupted
+- Changed simulated instrument's kernel driver version from 4.7 to 255.255
+- Fixed DP1400, U1071Axxx, U1091Axxx, number of segments reduced from 1000 to
+961 at max sample rate
+- Fixed AP240, wrong firmware loaded after calibration in non digitizer modes
+- Fixed DP210, DC265, DC270, RC20x, DBS90x + family wrong delay 500ps (1GSs),
+1.5ns (500MSs), 2.5ns (400MSs) (since v4.13.0)
+- Removed Windows 'Dll Already Loaded' error message. Check is now done at
+kernel level (require Acqir500.sys 1.13.0.433 or higher)
+- Changed literal attribute values of TCs to resemble those of digitizers
+- Added possibility to specify VISA DLL name in .INI file with key
+'VISA_DLL_NAME='
+- DC440 Family, changed limits on max EXT Clk freq
+- Fixed DP105, DP110, DC110, DC265, DC270, DBSxx, internal channel trigger
+calibration not applied (since v4.13.0)
+- Fixed DMA on LabVIEW RT not working for DC2x2
+- AP240 Avg, added support for selection of marker latch mode
+- Fixed DP1400 AS Bus, driver does not detect some invalid AS Bus cases
+- AP240 Avg, added support for using the internal reference as clock source
+for timestamps
+- Fixed 'readData' for AP240 PeakTDC accepts dataType Real64 but returns data
+as Int32
+- Fixed ACxxx/SCxxx 'oldTxBitRate' attribute randomly accessible in AS Bus
+- Fixed 'AdvTrig' models, 'trigImpedance -1' randomly ineffective
+- Fixed 'getInstrumentInfo' call for "OverloadStatus -1" returning error
+ACQIRIS_ERROR_PARAM_STRING_INVALID
+- Fixed TCxxx, init with reset does not completely reset the device
+- Fixed AS Bus instrument forgetting its memory option after
+'multiInstrAutoDefine' if located next to identical model without option
+
+FPGA .bit files:
+     AC210.bit                             Version B
+     AC240.bit                             Version B
+     AC240FFT2GSs.bit                      Version B
+     AC240mem.bit                          Version A
+     AP100FPGA1_AP200FPGA1and3.bit         Version H
+     AP100FPGA2_AP200FPGA2and4.bit         Version H
+     AP101FPGA1_AP201FPGA1and3.bit         Version R2.08
+     AP101FPGA2_AP201FPGA2and4.bit         Version R2.08
+     AP240_AP235_AP210_AP205.bit           Version B
+     AP240_AP235_AP210_AP205_AdvTDC.bit    Version R2.04
+     AP240_AP235_AP210_AP205_Averager.bit  Version E
+     AP240_AP235_AP210_AP205_SSR.bit       Version R2.04
+     DC440_DC438_DC436.bit                 Version R1.02
+     DC440_DC438_DC436_RevD.bit            Version R4.00
+     DP310_DP308_DP306.bit                 Version R1.02
+     DP310_DP308_DP306_RevD.bit            Version R4.00
+     SC210.bit                             Version B
+     SC210stream2.bit                      Version V2.01
+     SC240.bit                             Version B
+     SC240Str1.bit                         Version A
+     SC240Stream2.bit                      Version B
+     SC240Stream12.bit                     Version V2.3
+     TC840.bit                             Version E
+     TC842.bit                             Version B
+     TC890.bit                             Version D
+
+
+
+
+Acqiris Software 3.2a (December 1st, 2007)
+=====================
+
+Device Driver: Uses version 4.13.3.9
+    loadable kernel module version 1.6.12 (for Linux 2.6 kernels)
+    loadable kernel module version 1.4.2  (for Linux 2.4 kernels)
+AcqirisDemo: Uses version 3.8.1.27
+
+Linux specific changes
+- Added changes for compliance with kernel 2.6.19
+  - Removed inclusion of "linux/config.h"
+  - Changed type of IRQ handler function,
+  - Removed IOCTL_RESTORE_BARS, as pci_find_devices() is no more defined.
+- Fixed drv-install script for kernels 2.6
+
+Other Changes
+- DP1400 family: fixed potential delay calibration failures
+- Fixed T3 readData wrongly returning ACQIRIS_ERROR_INSTRUMENT_RUNNING
+- TC family: COMMON input cannot be disabled anymore
+- New GetInstrumentInfo item: 'TbNextSegmentPad'
+- Fixed AC240/SC240 P512M calibrate infinitely if FPGA bit file missing
+- Fixed Acqrs_InitWithOptions() with reset=T calibrates twice after 2nd call
+- Added support for DP1410, DC140HZ, DC152HZ
+- Fixed AP240-SSR readData silently ignoring firstSegment != 0
+- DC271A Family, DC282 Family, AP240 Family, fixed external trigger
+calibration errors
+- Fixed driver crashes on close with Agilent VISA if Acqrs_closeAll() is not
+called
+- DP1400, DC282 families: disabled TDC calibration to avoid ExtCkCont
+Cal Error when below 800MHz FreqIn
+- Fixed DP1400 problems in ExtCk Continuous mode
+- Fixed PLX90xx problems when using non canonical number of points/segments
+- TC family: fixed crash when calling init() twice if bit file not found
+- AC2x0: changed EEPROM to make the odlTxBitRate attribute available
+- TC fanily: fixed TC data descriptor's incorrect sample size field
+- TC840: fixed times bigger than 0.1s incorrectly calculated
+- Fixed 'returnedNbrSegments' and 'reportNbrAcquiredSegments' returning an
+invalid value after 'stop'
+- DC270/DC265: adjusted the external trigger delay in EEPROM (since C02-D03)
+- DP1400: fixed external clock x2, the driver wrongly authorize 4GS/s (if the
+ref is 2GHz)
+- DC270: in ASBUS configuration, fixed error causing the trigger source to
+always return to channel 1 after calibrate
+- DP1400: added external memory support
+
+FPGA .bit files:
+     AC210.bit                             Version B
+     AC240.bit                             Version B
+     AC240FFT2GSs.bit                      Version B
+     AC240mem.bit                          Version A
+     AP100FPGA1_AP200FPGA1and3.bit         Version H
+     AP100FPGA2_AP200FPGA2and4.bit         Version H
+     AP101FPGA1_AP201FPGA1and3.bit         Version R2.08
+     AP101FPGA2_AP201FPGA2and4.bit         Version R2.08
+     AP240_AP235_AP210_AP205.bit           Version B
+     AP240_AP235_AP210_AP205_AdvTDC.bit    Version R2.04
+     AP240_AP235_AP210_AP205_Averager.bit  Version D
+     AP240_AP235_AP210_AP205_SSR.bit       Version R2.04
+     DC440_DC438_DC436.bit                 Version R1.02
+     DC440_DC438_DC436_RevD.bit            Version R4.00
+     DP310_DP308_DP306.bit                 Version R1.02
+     DP310_DP308_DP306_RevD.bit            Version R4.00
+     SC210.bit                             Version B
+     SC210stream2.bit                      Version V2.01
+     SC240.bit                             Version B
+     SC240Str1.bit                         Version A
+     SC240Stream2.bit                      Version B
+     SC240Stream12.bit                     Version V2.3
+     TC840.bit                             Version D
+     TC890.bit                             Version C
+
+Acqiris Software 3.1b (August 8, 2007)
+=====================
+
+Device Driver: Uses version 4.12.4.1
+    All other software unchanged
+
+Linux specific changes
+- Fixed SegmentDescriptor readout from LabView VIs.
+
+Acqiris Software 3.1a (July 1, 2007)
+=====================
+
+Device Driver: Uses version 4.12.2.1
+    loadable kernel module version 1.6.11 (for Linux 2.6 kernels)
+    loadable kernel module version 1.4.1  (for Linux 2.4 kernels)
+AcqirisDemo: Uses version 3.8.0.1
+
+Linux specific changes
+- Fixed DC440 ASBus Trigger Delay wrong by ~4ns on slave devices
+- Fixed TC890 readData() returning ERROR_NO_DATA on bane the NFS server to expk overflow
+- Fixed performance drop in SMAR mode with waitForEndOfAcquisition when all
+banks are full
+- DC440: fixed calibration failure with MXI and IC414
+- DC440 family: 10MHz Ext Ref/ExtCk Threshold was not applied during
+calibrations
+- Added support for DP1400
+- Added TC890 'Pulse' slope modes
+- Fixed AcqrsT3_configMemorySwitch() doesn't force new setup
+- getAcqStatus/acqDone/procDone functions return ACQIRIS_ERROR_IO_READ when
+PCI link is lost
+- TC family: added API to control hardware timeout mode
+- DC282/DC152: improve ENOB with new algorithm for delay calibrations
+- DC440 family: fixed calibrateEx(mode = 3) which did not permit to calibrate
+a channel individually
+- DC271 family + ASBus: fixed slaves trig T0 wrong by 4ns
+- Fixed AP240 AdvTDC with histogram: readData() returns wrong
+dataDesc.actualDataSize
+- AP201: fixed process data in autoswitch mode.
+- Fixed AcqrsD1_configMode and other functions returning
+ACQIRIS_ERROR_INSTRUMENT_RUNNING after calibration
+- TC family: added warning if acquisition stopped due to hardware timeout
+- New ReadSeqRawW mode
+- Fixed crash trying to program the FPGA of a TC8xx with
+Acqrs_configLogicDevice
+- Fixed maximum waveform length for AP240 AdvTDC with combined channels
+- Added support for DC140HZ
+- Fixed 'Aqrs_errorMessage' returning unterminated string on buffer overflow
+
+FPGA .bit files:
+     AC210.bit                             Version B
+     AC240.bit                             Version B
+     AC240FFT2GSs.bit                      Version B
+     AC240mem.bit                          Version A
+     AP100FPGA1_AP200FPGA1and3.bit         Version H
+     AP100FPGA2_AP200FPGA2and4.bit         Version H
+     AP101FPGA1_AP201FPGA1and3.bit         Version R2.08
+     AP101FPGA2_AP201FPGA2and4.bit         Version R2.08
+     AP240_AP235_AP210_AP205.bit           Version B
+     AP240_AP235_AP210_AP205_AdvTDC.bit    Version R2.04
+     AP240_AP235_AP210_AP205_Averager.bit  Version D
+     AP240_AP235_AP210_AP205_SSR.bit       Version R2.04
+     DC440_DC438_DC436.bit                 Version R1.02
+     DC440_DC438_DC436_RevD.bit            Version R4.00
+     DP310_DP308_DP306.bit                 Version R1.02
+     DP310_DP308_DP306_RevD.bit            Version R4.00
+     SC210.bit                             Version B
+     SC210stream2.bit                      Version V2.01
+     SC240.bit                             Version B
+     SC240Str1.bit                         Version A
+     SC240Stream2.bit                      Version B
+     SC240Stream12.bit                     Version V2.3
+     TC840.bit                             Version D
+     TC890.bit                             Version B
+
+Acqiris Software 3.0a (March 6, 2007)
+=====================
+
+Device Driver: Uses version 4.11.6.71
+    loadable kernel module version 1.6.11 (for Linux 2.6 kernels)
+    loadable kernel module version 1.4.1  (for Linux 2.4 kernels)
+AcqirisDemo: Uses version 3.7.6.57
+
+Linux specific changes
+- Added lock to prevent use from several processes (2.6).
+- Changed MODULE_PARM usage to module_param (2.6)
+- Removed all spin_lock usage (2.6).
+- Changed delay implementation to use kernel's udelay() function (2.6).
+
+Other changes
+- DC440 family: fixed wrong level on ExtRef10MHz input in ASBus mode
+- Fixed misleading error message when TC bit file is not found
+- 'InitWithOptions' and 'init' return the calibration status and perform a
+reset if 'reset=VI_TRUE'
+- AP240: added support for segment markers
+- AP240: fixed invert data doesn't work in averager mode on channel 2
+- AP240: fixed simple TDC mode can only be enabled for channel 1
+- A valid instrument never returns a ViSession with value 0 (VI_NULL) anymore
+- DC282/DC152 families: optimize the Seq Mode reading of segments descriptors
+by using DMA transfer
+- Fixed problems with external memory devices on AC240 and DC282/DC152
+families
+- New 'SMAR' acquisition mode
+- Support VISA resource name 'PXI<bus>::<device>::INSTR'
+- New function 'freeBank' for SMAR acquisitions
+- Fixed WaitForAcquisitionEnd returning "ACQIRIS_ERROR_OVERLOAD" when the
+module doesn't answer
+
+FPGA .bit files:
+     AC210.bit                             Version B
+     AC240.bit                             Version B
+     AC240FFT2GSs.bit                      Version B
+     AC240mem.bit                          Version A
+     AP100FPGA1_AP200FPGA1and3.bit         Version H
+     AP100FPGA2_AP200FPGA2and4.bit         Version H
+     AP101FPGA1_AP201FPGA1and3.bit         Version R2.08
+     AP101FPGA2_AP201FPGA2and4.bit         Version R2.08
+     AP240_AP235_AP210_AP205.bit           Version B
+     AP240_AP235_AP210_AP205_AdvTDC.bit    Version R2.04
+     AP240_AP235_AP210_AP205_Averager.bit  Version D
+     AP240_AP235_AP210_AP205_SSR.bit       Version R2.04
+     DC440_DC438_DC436.bit                 Version R1.02
+     DC440_DC438_DC436_RevD.bit            Version R4.00
+     DP310_DP308_DP306.bit                 Version R1.02
+     DP310_DP308_DP306_RevD.bit            Version R4.00
+     SC210.bit                             Version B
+     SC210stream2.bit                      Version V2.01
+     SC240.bit                             Version B
+     SC240Str1.bit                         Version A
+     SC240Stream2.bit                      Version B
+     SC240Stream12.bit                     Version V2.3
+     TC840.bit                             Version A
+     TC890.bit                             Version B
+
+Acqiris Software 2.16b (October 13, 2006)
+======================
+
+AcqirisDemo: Uses version 3.7.2.13
+
+Device Driver: Uses AqDrv4 V4.11.2.21
+    loadable kernel module version 1.6.8 (for Linux 2.6 kernels)
+    loadable kernel module version 1.4.1 (for Linux 2.4 kernels)
+- Added marker feature for APs.
+
+FPGA .bit files: 
+     TC840.bit                             Version A
+     TC842.bit                             Version A
+     TC890.bit                             Version A
+     AC210.bit                             Version 0.1
+     AC240.bit                             Version 0.1
+     SC210.bit                             Version 0.1
+     SC240.bit                             Version 0.1
+     AP100FPGA1_AP200FPGA1and3.bit         Version H
+     AP100FPGA2_AP200FPGA2and4.bit         Version H
+     AP101FPGA1_AP201FPGA1and3.bit         Version R2.08
+     AP101FPGA2_AP201FPGA2and4.bit         Version R2.08
+     AP240_AP235_AP210_AP205.bit           Version B
+     AP240_AP235_AP210_AP205_AdvTDC.bit    Version R2.01
+     AP240_AP235_AP210_AP205_Averager.bit  Version D
+     AP240_AP235_AP210_AP205_SSR.bit       Version R2.01
+     DC440_DC438_DC436.bit                 Version R1.02
+     DC440_DC438_DC436_RevD.bit            Version R4.00
+     DP310_DP308_DP306.bit                 Version R1.02
+     DP310_DP308_DP306_RevD.bit            Version R4.00
+
+Acqiris Software 2.16.a (June 26, 2006)
+=======================
+This is the first software release incorporating the TC instruments
+
+AcqirisDemo: Uses version 3.7.0
+
+Device Driver: Uses AqDrv4 V4.11.0.7
+    loadable kernel module version 1.6.5 (for Linux 2.6 kernels)
+    loadable kernel module version 1.4.1 (for Linux 2.4 kernels)
+- Introduces AcqrsT3 functions for TC counter support and Acqrs standard instrument functions
+
+FPGA .bit files: 
+     TC840.bit                             Version A
+     TC842.bit                             Version A
+     TC890.bit                             Version A
+     AC210.bit                             Version 0.1
+     AC240.bit                             Version 0.1
+     SC210.bit                             Version 0.1
+     SC240.bit                             Version 0.1
+     AP100FPGA1_AP200FPGA1and3.bit         Version H
+     AP100FPGA2_AP200FPGA2and4.bit         Version H
+     AP101FPGA1_AP201FPGA1and3.bit         Version R2.08
+     AP101FPGA2_AP201FPGA2and4.bit         Version R2.08
+     AP240_AP235_AP210_AP205.bit           Version B
+     AP240_AP235_AP210_AP205_AdvTDC.bit    Version R2.01
+     AP240_AP235_AP210_AP205_Averager.bit  Version C
+     AP240_AP235_AP210_AP205_SSR.bit       Version R2.01
+     DC440_DC438_DC436.bit                 Version R1.02
+     DC440_DC438_DC436_RevD.bit            Version R4.00
+     DP310_DP308_DP306.bit                 Version R1.02
+     DP310_DP308_DP306_RevD.bit            Version R4.00
+
+Acqiris Software 2.15.c (Mar 8, 2006)
+=======================
+
+AcqirisDemo: Uses version 3.6.2.1
+- Added continuous acquisition recording to file
+
+Device Driver: Uses AqDrv4 version 4.9.7.19
+    loadable kernel module version 1.6.5 (for Linux 2.6 kernels)
+    loadable kernel module version 1.4.1 (for Linux 2.4 kernels)
+- Fixed ASBUS2 detection finding more instruments than really existing
+- Fixed channel combine attribute on multi-instrument
+- Adjusted horizontal position of the DC440/DC438 RevD (-3.4ns when
+<= 200MS/s)
+
+FPGA .bit files: unchanged from 2.15 (see below)
+
+
+Acqiris Software 2.15.b (Jan 26, 2006)
+=======================
+
+AcqirisDemo: Uses version 3.6.1.4
+
+- Fixed bug preventing timebase attribute changes in ASBus multi-instruments
+- Fixed bug causing control IO attribute changes in Master ASBUS
+multi-instruments to have effect on module 0
+- Fixed bug causing instrument RO attribute values for a Master ASBus 
+multi-instrument to be those of module 0
+- Fixed invalid timestamps in AdvancedTDC mode when using external reference
+(AP240 AdvTDC)
+- DC282/DC152 families: fixed hanging acquisitions and invalid timestamps in
+ASBus2 or external clock
+
+Device Driver: Uses AqDrv4 version 4.9.6.1
+    loadable kernel module version 1.6.5 (for Linux 2.6 kernels)
+    loadable kernel module version 1.4.1 (for Linux 2.4 kernels)
+
+FPGA .bit files: unchanged from 2.15 (see below)
+
+
+Acqiris Software 2.15 (Jan 11, 2006)
+=====================
+
+AcqirisDemo: Uses version 3.6.1.3
+
+- Added Load/Save options for gate definitions (AP240 SSR + AdvTDC)
+- Added InterpolatedPeak feature for single peak and histograms (AP240 SSR +
+AdvTDC)
+- Added Peak region readout operating modes support (AP240 SSR + AdvTDC)
+- Fixed display of nbrAcqRead and nbrAcqShown
+
+
+Device Driver: Uses AqDrv4 version 4.9.3.17
+    loadable kernel module version 1.6.5 (for Linux 2.6 kernels)
+    loadable kernel module version 1.4.1 (for Linux 2.4 kernels)
+
+- Fixed loadable kernel module compilation errors for Linux version > 2.6.9.
+- Changed CPLD registers reading delays (12 -> 30 us) (Could cause
+intermittent hardware or calibration failures - seen with PC503 and
+DC282-family boards)
+- DC152/DC282 families: changed ASBUS2 Master position and support 5 modules
+- Support for programming a specific FPGA in ASBUS configuration
+- Corrected calibration time estimations
+- Fixed readData in Real64 (Could return garbage for first sample)
+- DC282/DC152 families: support DDR External memory
+- Fixed problem when acq timeouts (e.g. no clocks) would leave the instrument
+stuck calibrating. Now an acq timeout error is returned.
+- Fixed AP240 family (Peak detection) Start/Valid~Delta~Neg/Pos~PeakV are
+impossible to change
+- Fixed problem of timebase configuration when changing channel combination
+(in some cases required applying the change twice)
+- DC282/DC152 families: extended timestamps support, until ~213 days (instead
+of ~26 days) & reset feature
+- Support DC152 2GHz mezzanines
+- Fixed calibration of DC271A
+- Fixed readData dataDesc->returnedSegments: now corresponds to # of actually
+acquired segments
+- Fixed 'reportNbrAcquiredSegments' returning wrong value (on MAC100 based
+instruments) if acquisition was 'Stopped'
+- Fixed thread safety under Linux (now matches Windows recursive mutexes)
+- Changed maximum number of segments: 16384 for APX01 and 8191 for AP240/AP235
+all options
+- Added support for Interpolated Histograms (APXXX with AdvTDC)
+- Added support for TC890 interrupts and external memory DMA read
+
+FPGA .bit files: 
+     AC210.bit                             Version 0.1
+     AC240.bit                             Version 0.1
+     SC210.bit                             Version 0.1
+     SC240.bit                             Version 0.1
+     AP100FPGA1_AP200FPGA1and3.bit         Version H
+     AP100FPGA2_AP200FPGA2and4.bit         Version H
+     AP101FPGA1_AP201FPGA1and3.bit         Version R2.08
+     AP101FPGA2_AP201FPGA2and4.bit         Version R2.08
+     AP240_AP235_AP210_AP205.bit           Version B
+     AP240_AP235_AP210_AP205_AdvTDC.bit    Version R2.01
+     AP240_AP235_AP210_AP205_Averager.bit  Version C
+     AP240_AP235_AP210_AP205_SSR.bit       Version R2.01
+     DC440_DC438_DC436.bit                 Version R1.02
+     DC440_DC438_DC436_RevD.bit            Version R4.00
+     DP310_DP308_DP306.bit                 Version R1.02
+     DP310_DP308_DP306_RevD.bit            Version R4.00
+         
+
+Acqiris Software 2.14.d (July 28, 2005)
+=======================
+
+Device Driver: Uses AqDrv4 V4.7.4.1
+    loadable kernel module version 1.6.1 (for Linux 2.6 kernels)
+    loadable kernel module version 1.4.1 (for Linux 2.4 kernels)
+- Fixed insufficent settling time for trigger DC -> AC Switching on DC271A
+   with MXI-3: could cause calibration failure.
+- Changed 10-bit digitizers port A timings (Fix flyers on some cards).
+- Changed 10-bit digitizers trigger point formula calculation 
+   (Fixes problems when the trigger comes >~2s after start)
+
+FPGA .bit files: 
+         AC210.bit                             Version 0.1
+         AC240.bit                             Version 0.1
+         AP100FPGA1_AP200FPGA1and3.bit         Version H
+         AP100FPGA2_AP200FPGA2and4.bit         Version H
+         AP101FPGA1_AP201FPGA1and3.bit         Version 2.07
+         AP101FPGA1_AP201FPGA2and4.bit         Version 2.07
+         AP240_AP235_AP210_AP205.bit           Version B
+         AP240_AP235_AP210_AP205_AdvTDC.bit    Version 2.00
+         AP240_AP235_AP210_AP205_Averager.bit  Version C
+         AP240_AP235_AP210_AP205_SSR.bit       Version R2.00
+         DC440_DC438_DC436.bit                 Version R1.02
+         DC440_DC438_DC436_RevD.bit            Version R4.00
+         DP310_DP308_DP306.bit                 Version R1.02
+         DP310_DP308_DP306_RevD.bit            Version R4.00
+         
+
+Acqiris Software 2.14.c (June 15, 2005)
+=======================
+
+Device Driver: Uses AqDrv4 V4.7.3.1
+    loadable kernel module version 1.6.1 (for Linux 2.6 kernels)
+    loadable kernel module version 1.4.1 (for Linux 2.4 kernels)
+- fix calibration problem effecting DC2x1A units
+
+FPGA .bit files: 
+         AC210.bit                             Version 0.1
+         AC240.bit                             Version 0.1
+         AP100FPGA1_AP200FPGA1and3.bit         Version H
+         AP100FPGA2_AP200FPGA2and4.bit         Version H
+         AP101FPGA1_AP201FPGA1and3.bit         Version 2.07
+         AP101FPGA1_AP201FPGA2and4.bit         Version 2.07
+         AP240_AP235_AP210_AP205.bit           Version B
+         AP240_AP235_AP210_AP205_AdvTDC.bit    Version 2.00
+         AP240_AP235_AP210_AP205_Averager.bit  Version C
+         AP240_AP235_AP210_AP205_SSR.bit       Version R2.00
+         DC440_DC438_DC436.bit                 Version R1.02
+         DC440_DC438_DC436_RevD.bit            Version R4.00
+         DP310_DP308_DP306.bit                 Version R1.02
+         DP310_DP308_DP306_RevD.bit            Version R4.00
+         
+Acqiris Software 2.14b (June 9, 2005)
+======================
+Device Driver (Linux): Uses AqDrv4 V4.7.2.1
+    loadable kernel module version 1.6.1 (for Linux 2.6 kernels)
+    loadable kernel module version 1.4.1 (for Linux 2.4 kernels)
+
+- fix bad interrupt handling
+- fix AcqrsD1_readData bug which occurred for 8-bit digitizers being read for DOUBLE voltage values
+
+FPGA .bit files: 
+         AC210.bit                                                       Version 0.1
+         AC240.bit                                                       Version 0.1
+         AP100FPGA1_AP200FPGA1and3.bit         Version H
+         AP100FPGA2_AP200FPGA2and4.bit         Version H
+         AP101FPGA1_AP201FPGA1and3.bit         Version 2.07
+         AP101FPGA1_AP201FPGA2and4.bit         Version 2.07
+         AP240_AP235_AP210_AP205.bit           Version B
+         AP240_AP235_AP210_AP205_AdvTDC.bit    Version 2.00
+         AP240_AP235_AP210_AP205_Averager.bit  Version C
+         AP240_AP235_AP210_AP205_SSR.bit       Version R2.00
+         DC440_DC438_DC436.bit                 Version R1.02
+         DC440_DC438_DC436_RevD.bit            Version R4.00
+         DP310_DP308_DP306.bit                 Version R1.02
+         DP310_DP308_DP306_RevD.bit            Version R4.00
+
+Acqiris Software 2.14a (June 1, 2005)
+======================
+Device Driver (Linux): Uses AqDrv4 V4.7.1.3
+    loadable kernel module version 1.5
+
+- Linux kernel 2.4 and 2.6 support.
+- AP235/AP240 AdvancedTDC support.
+- add support for 10-bit digitizers
+- add support for DC440 Rev. D
+- fix DC140 sampling instant difference on C1 and C2
+- fix DC140 External clock double traces
+- fix DC211, DC241 bad T0 value (all modules)
+- fix bad SegDesc timestamp values for Averagers
+- add check on AqReadParameters.flags invalid value
+
+FPGA .bit files: 
+         AC210.bit                                                       Version 0.1
+         AC240.bit                                                       Version 0.1
+         AP100FPGA1_AP200FPGA1and3.bit         Version H
+         AP100FPGA2_AP200FPGA2and4.bit         Version H
+         AP101FPGA1_AP201FPGA1and3.bit         Version 2.07
+         AP101FPGA1_AP201FPGA2and4.bit         Version 2.07
+         AP240_AP235_AP210_AP205.bit           Version B
+         AP240_AP235_AP210_AP205_AdvTDC.bit    Version 2.00
+         AP240_AP235_AP210_AP205_Averager.bit  Version C
+         AP240_AP235_AP210_AP205_SSR.bit       Version R2.00
+         DC440_DC438_DC436.bit                 Version R1.02
+         DC440_DC438_DC436_RevD.bit            Version R4.00
+         DP310_DP308_DP306.bit                 Version R1.02
+         DP310_DP308_DP306_RevD.bit            Version R4.00
+
+Acqiris Software 2.13.a (August 30, 2004)
+======================
+Device Driver (Linux): acqrsPCI.o V1.4 
+
+- DC135 introduction
+- AcqrsD1_forceTrigEx support added. Allowing Trigger Out for forced triggers.
+- AcqrsD1_acquireEx support for Averager continue to accumulate
+- AcqrsD1_configAvgConfig support for averager StartVetoEnable 
+- AcqrsD1_configAvgConfig support for AP235/AP240-Avgr average out signal 
+- Changed the processing memory option of the AP235/AP240 from A8M to P24MB  
+- Fixed DC440 family, AcqrsD1_readData problem when readPar->firstSampleInSeg != 0                   
+
+FPGA .bit files: AP100FPGA1_AP200FPGA1and3.bit     Version G
+         AP100FPGA2_AP200FPGA2and4.bit         Version G
+         AP101FPGA1_AP201FPGA1and3.bit         Version 2.07
+         AP101FPGA1_AP201FPGA2and4.bit         Version 2.07
+         AP240_AP235_AP210_AP205.bit           Version A
+         AP240_AP235_AP210_AP205_Averager.bit  Version C
+         AP240_AP235_AP210_AP205_SSR.bit       Version R1.05
+         DC440_DC438_DC436.bit                 Version R1.02
+         DP310_DP308_DP306.bit                 Version R1.02
+      
+       
+Acqiris Software 2.12.a (May 7, 2004)
+======================
+Device Driver (Linux): acqrsPCI.o V1.4 
+
+FPGA .bit files: AP100FPGA1_AP200FPGA1and3.bit Version F
+         AP100FPGA2_AP200FPGA2and4.bit Version F
+         AP101FPGA1_AP201FPGA1and3.bit Version 2.07
+         AP101FPGA1_AP201FPGA2and4.bit Version 2.07
+         AP240_AP235.bit               Version A
+         AP240_AP235_Averager.bit      Version B
+         DC440_DC438_DC436.bit         Version R1.02
+         DP310_DP308_DP306.bit         Version R1.02
+- AP235/AP240 Avgr major bug fix
+
+Acqiris Software 2.11.b (February 19, 2004)
+====================
+Device Driver (Linux): acqrsPCI.o V1.4 RH8.0 RH9.0 
+( the kernel mode driver source code is now available )
+
+- critical bug fixes for SleepAWhile, DMA timeout, 
+    WaitForEndOfAcquisition, WaitForEndOfProcessing
+- suppression of assert messages
+
+Acqiris Software 2.11.a (January 26, 2004)
+====================
+Device Driver (Linux): acqrsPCI.o V1.3 RH8.0 RH9.0 
+( the kernel mode driver source code is now available )
+
+- AP235/AP240 Avgr supported
+- added support for more than 780 MB of system memory
+- the kernel mode driver supports elimination of the config IO space on the PLX 9054
+
+FPGA .bit files: AP100FPGA1_AP200FPGA1and3.bit Version F
+         AP100FPGA2_AP200FPGA2and4.bit Version F
+         AP101FPGA1_AP201FPGA1and3.bit Version 2.07
+         AP101FPGA1_AP201FPGA2and4.bit Version 2.07
+         AP240_AP235.bit               Version A
+         AP240_AP235_Averager.bit      Version A
+         DC440_DC438_DC436.bit         Version R1.02
+         DP310_DP308_DP306.bit         Version R1.02
+- file naming convention changed
+- AP235/AP240 Avgr supported
+
+Acqiris Software 2.9.a (June 27, 2003)
+====================
+
+Device Driver (Linux): acqrsPCI.o V1.2 for RH7.x RH8.0 RH9.0 
+
+- DP306, DP308, DP310, DC436, and DC438 supported
+- read of multisegments in Averager mode fixed
+- timestamps are now ViUInt32 (Unsigned 32-bit integer).
+- added 1.75V FS vertical scale
+
+FPGA .bit files: APx00*.bit Version E
+         APx01*.bit Version R2.06
+         DC4xx*.bit Version R1.02
+         DP3xx*.bit Version R1.02
+- DP306, DP308, DP310, DC436, and DC438 supported   
+- shorter acquisition time for DC440
+
+Acqiris Software 2.8.a (April 2, 2003)
+====================
+
+Device Driver (Linux): acqrsPCI.o V1.2 for RH8 (V1.15 for RH7x)
+
+-Full support for the DC 440
+-support for NSA mode on the AP100/AP200.
+-Full support for AP101/AP201 peak modes
+-more tolerant treatment of _readData arguments
+-better notification of value adaptation for _readData arguments                     
+-ControlIO 10MHz reference always present when selected   
+
+FPGA .bit files: APx00*.bit Version E
+         APx01*.bit Version R2.05
+         DC440*.bit Version R1.00
+-Official release of DC440, APx01, and APx00 NSA functionality                    
+-Updated firmware files for AP and DC modules. Headers present for all
+
+Acqiris Software 2.7 (August 8, 2002)
+====================
+
+Device Driver (Linux): acqrsPCI.o V1.15
+
+-No changes since 2.6 for the Linux distribution.
+
+Acqiris Software 2.6 (June 17, 2002)
+====================
+
+Device Driver (Linux): acqrsPCI.o V1.15
+
+-Full support for new models DP214, DP235 and DP240.
+-Extended support of External Clock modes.
+-New function AcqrsD1_calibrateEx for special recalibrations, in particular 
+needed for delay calibration with External Clock.
+-Control of sync/nosync of trigger OUT signal for DC2x1, DP214 and DP240 
+(AcqrsD1_configControlIO).
+-Modification to AcqrsD1_restoreInternalRegisters function to permit 
+recovery of exact trigger timing when reading battery backed-up waveforms.
+-New query keyword TbSegmentPad in function AcqrsD1_getInstrumentInfo for 
+multi-segment readout of sequence waveforms.
+
+Bug fixes:
+-Multithreaded application settings changes were not always seen by all 
+threads.
+-Re-initialization of instruments now possible after call to 
+AcqrsD1_closeAll.
+-Coercion to DC or AC when DC50 and AC50 not available for trigCoupling in 
+AcqrsD1_configTrigSource.
+-AcqrsD1_readCharSequence and AcqrsD1_readRealSequence can now handle 
+combined channels readout (on supporting models).
+-Corrected reading of sequences with AcqrsD1_readData.
+-Uninitialized variable could sometimes cause crash on exit of the driver.
+
+
+Acqiris Software 2.5 (February 25 2002)
+====================
+
+Device Driver (Linux): acqrsPCI.o V1.11
+
+-Full support for new models DC271, DC241, DC211, AP100 and AP200.
+-Kernel-mode drivers now support 'processing interrupts' for future
+FPGA-computations
+-New API functions:
+New general-purpose waveform read function: AcqrsD1_readData
+For instruments with channel combination capability:
+AcqrsD1_configChannelCombination, AcqrsD1_getChannelCombination
+For instruments with future on-board processing: AcqrsD1_configSetupArray,
+AcqrsD1_getSetupArray, AcqrsD1_processData, AcqrsD1_procDone,
+AcqrsD1_stopProcessing, AcqrsD1_waitForEndOfProcessing
+
+Acqiris Software 2.4 (August 6 2001)
+====================
+
+Device Driver (Linux): acqrsPCI.o V1.00
+
+-First Linux release.
+
+
+
